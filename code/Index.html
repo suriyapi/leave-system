@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--dark:#1F4E4E;--dark2:#2A6262;--light:#F7F6F1;--card:#FFFDF8;--line:#DCD8CC;--text:#2E3B3B;--muted:#6B7A7A;
+        --accent:#B4531A;--accent2:#F2B58A;--ok:#2E7D4F;--okbg:#E2EFDA;--warn:#8A6100;--warnbg:#FFF2CC;--bad:#9C1C06;--badbg:#FCE4D6}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Sarabun',Tahoma,sans-serif;background:var(--light);color:var(--text);font-size:16px;line-height:1.5}
+  h1,h2,h3{font-family:'Kanit',Tahoma,sans-serif;font-weight:600;margin:0;color:var(--dark)}
+  .wrap{max-width:1000px;margin:0 auto;padding:16px}
+  header{background:var(--dark);color:var(--light);position:sticky;top:0;z-index:5}
+  header .wrap{display:flex;align-items:center;gap:12px;padding-top:12px;padding-bottom:12px}
+  header h1{color:var(--light);font-size:20px;flex:1}
+  .ham{background:none;border:0;cursor:pointer;padding:8px;margin-left:-8px;border-radius:8px;display:flex;flex-direction:column;gap:5px}
+  .ham span{display:block;width:22px;height:2px;background:var(--light);border-radius:2px}
+  .who{font-size:14px;color:#CFE0DC;text-align:right;line-height:1.35}
+  .btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;background:var(--accent);color:#FFF8F0}
+  .btn:disabled{opacity:.55;cursor:wait}
+  .btn.line{background:transparent;color:var(--dark);border:1px solid var(--line)}
+  .btn.sm{padding:7px 12px;font-size:14px}
+  .btn.ok{background:var(--ok)} .btn.no{background:#fff;color:var(--bad);border:1px solid #E7B9A8}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .login{max-width:400px;margin:48px auto}
+  .login h2{font-size:26px;margin-bottom:4px}
+  label{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+  input,select,textarea{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text)}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent2);border-color:var(--accent)}
+  .hint{font-size:13px;color:var(--muted)}
+  .msg{border-radius:10px;padding:10px 14px;margin-top:14px;font-size:15px}
+  .msg.err{background:var(--badbg);color:var(--bad)} .msg.ok{background:var(--okbg);color:var(--ok)} .msg.warn{background:var(--warnbg);color:var(--warn)}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px} .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .bal .t,.kpi .t{font-size:14px;color:var(--muted);font-weight:600}
+  .bal .n,.kpi .n{font-family:'Kanit',sans-serif;font-size:32px;font-weight:600;color:var(--dark);line-height:1.15}
+  .bal .n small{font-size:15px;color:var(--muted);font-weight:500}
+  .kpi .n{color:var(--accent)} .kpi .n small{font-size:15px;color:var(--muted);font-weight:500}
+  .bar{height:8px;border-radius:8px;background:#EAF0EE;overflow:hidden;margin:10px 0 6px}
+  .bar i{display:block;height:100%;background:var(--dark)}
+  .bal.low .bar i{background:#C9A227} .bal.over .bar i{background:var(--accent)} .bal.over .n{color:var(--accent)}
+  .chip{display:inline-block;font-size:13px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .c-ok{background:var(--okbg);color:var(--ok)} .c-wait{background:var(--warnbg);color:var(--warn)} .c-no{background:#EDEDED;color:#666} .c-over{background:var(--badbg);color:var(--bad)}
+  .c-role{background:#2A6262;color:#F7F6F1}
+  .sec{margin-top:18px} .sec h3{font-size:19px;margin-bottom:12px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .types{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .types input{position:absolute;opacity:0;width:1px;height:1px}
+  .types label{margin:0;text-align:center;border:1px solid var(--line);border-radius:10px;padding:10px 4px;cursor:pointer;font-weight:600;background:#fff}
+  .types input:checked+label{background:var(--dark);color:var(--light);border-color:var(--dark)}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th{text-align:left;font-size:13px;color:var(--muted);font-weight:600;padding:8px;border-bottom:1px solid var(--line)}
+  td{padding:10px 8px;border-bottom:1px solid #EEEBE2;vertical-align:top}
+  td.num,th.num{text-align:right}
+  .neg{color:var(--accent);font-weight:700}
+  .empty{color:var(--muted);text-align:center;padding:18px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px} .filters>*{flex:1;min-width:160px}
+  /* drawer */
+  .scrim{position:fixed;inset:0;background:rgba(20,40,40,.4);opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+  .drawer{position:fixed;top:0;left:0;bottom:0;width:280px;max-width:84vw;background:var(--card);z-index:21;transform:translateX(-100%);transition:transform .22s;display:flex;flex-direction:column}
+  body.menu .scrim{opacity:1;pointer-events:auto} body.menu .drawer{transform:none;box-shadow:4px 0 24px rgba(0,0,0,.12)}
+  .drawer .dh{background:var(--dark);color:var(--light);padding:20px 18px}
+  .drawer .dh b{font-size:17px} .drawer .dh div{font-size:14px;color:#CFE0DC}
+  .drawer nav{padding:10px;flex:1;overflow:auto}
+  .drawer .grp{font-size:12px;color:var(--muted);font-weight:700;padding:12px 10px 4px}
+  .drawer a{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;border-radius:10px;color:var(--text);text-decoration:none;font-weight:600;cursor:pointer}
+  .drawer a:hover{background:#EEF2F0} .drawer a.on{background:#E3ECE9;color:var(--dark)}
+  .badge{background:var(--accent);color:#fff;border-radius:999px;font-size:12px;padding:1px 8px}
+  .drawer .out{border-top:1px solid var(--line);padding:12px}
+  /* approve cards */
+  .req{display:grid;grid-template-columns:1fr auto;gap:8px 16px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff;margin-bottom:10px}
+  .req .acts{display:flex;gap:8px}
+  .hbar{display:flex;height:22px;border-radius:6px;overflow:hidden;background:#EEF2F0}
+  .hbar i{display:block;height:100%}
+  .legend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin-bottom:8px} .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px}
+  .modal{position:fixed;inset:0;background:rgba(20,40,40,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:30}
+  .modal.show{display:flex} .modal .card{max-width:420px;width:100%}
+  .modal .acts{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+  .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:s .8s linear infinite;vertical-align:-3px;margin-right:6px}
+  .btn.line .spin{border-color:rgba(31,78,78,.3);border-top-color:var(--dark)}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .hide{display:none!important}
+  @media (max-width:720px){
+    .grid3,.row2{grid-template-columns:1fr} .grid4{grid-template-columns:1fr 1fr}
+    .bal{display:grid;grid-template-columns:1fr auto;align-items:end;gap:0 12px} .bal .bar,.bal .hint{grid-column:1/-1}
+    table.cards thead{display:none} table.cards,table.cards tbody,table.cards tr,table.cards td{display:block;width:100%}
+    table.cards tr{border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-bottom:10px;background:#fff}
+    table.cards td{border:0;padding:3px 0;display:flex;justify-content:space-between;gap:10px;text-align:right}
+    table.cards td::before{content:attr(data-l);color:var(--muted);font-size:13px;text-align:left}
+    .req{grid-template-columns:1fr} .req .acts>*{flex:1}
+    header h1{font-size:17px} .who{display:none}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <button class="ham hide" id="hamBtn" onclick="menu(true)" aria-label="เมนู"><span></span><span></span><span></span></button>
+  <h1 id="pageTitle">ระบบวันลา</h1>
+  <div class="who hide" id="userBox"><b id="uName"></b><br><span id="uDept"></span></div>
+</div></header>
+
+<div class="scrim" onclick="menu(false)"></div>
+<aside class="drawer" aria-label="เมนู">
+  <div class="dh"><b id="dName"></b><div id="dInfo"></div></div>
+  <nav id="nav"></nav>
+  <div class="out"><button class="btn line" style="width:100%" onclick="logout()">ออกจากระบบ</button></div>
+</aside>
+
+<main class="wrap">
+  <!-- เข้าสู่ระบบ -->
+  <section id="loginView" class="card login">
+    <h2>เข้าสู่ระบบ</h2>
+    <p class="hint">ใช้รหัสพนักงานและ PIN 4 หลักที่ได้รับจากฝ่ายบุคคล</p>
+    <form onsubmit="doLogin(event)">
+      <label for="id">รหัสพนักงาน</label>
+      <input id="id" placeholder="E001" autocomplete="username" required>
+      <label for="pin">PIN</label>
+      <input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" required>
+      <button id="loginBtn" class="btn" style="width:100%;margin-top:18px">เข้าสู่ระบบ</button>
+    </form>
+    <div id="loginMsg"></div>
+  </section>
+
+  <!-- ของฉัน -->
+  <section id="v-me" class="view hide">
+    <div class="top">
+      <div><h2 style="font-size:24px">สิทธิ์ลาคงเหลือ</h2><span class="hint" id="tenure"></span></div>
+      <div style="display:flex;gap:8px;align-items:center"><span id="stChip"></span>
+        <button class="btn line sm" onclick="reloadMe()" id="refBtn">รีเฟรช</button></div>
+    </div>
+    <div id="overMsg"></div>
+    <div class="grid3 sec" id="balCards"></div>
+    <div class="card sec">
+      <h3>ประวัติการลา <span class="hint">(30 รายการล่าสุด)</span></h3>
+      <table class="cards"><thead><tr><th>เลขที่</th><th>วันที่ลา</th><th>ประเภท</th><th class="num">วัน</th><th>เหตุผล</th><th>สถานะ</th></tr></thead>
+        <tbody id="hist"></tbody></table>
+    </div>
+  </section>
+
+  <!-- ยื่นใบลา -->
+  <section id="v-apply" class="view hide">
+    <div class="card">
+      <h3 style="font-size:22px">ยื่นใบลา</h3>
+      <p class="hint" id="applyHint"></p>
+      <form onsubmit="sendLeave(event)">
+        <label>ประเภทการลา</label>
+        <div class="types">
+          <input type="radio" name="type" id="t1" value="ลาป่วย" checked><label for="t1">ลาป่วย</label>
+          <input type="radio" name="type" id="t2" value="ลากิจ"><label for="t2">ลากิจ</label>
+          <input type="radio" name="type" id="t3" value="ลาพักร้อน"><label for="t3">ลาพักร้อน</label>
+        </div>
+        <div class="row2">
+          <div><label for="date">วันที่ลา (วันแรก)</label><input type="date" id="date" required></div>
+          <div><label for="days">จำนวนวัน</label><select id="days"></select></div>
+        </div>
+        <label for="reason">เหตุผล <span class="hint">(ไม่บังคับ)</span></label>
+        <textarea id="reason" rows="2" maxlength="200" placeholder="เช่น ไปพบแพทย์"></textarea>
+        <button id="sendBtn" class="btn" style="margin-top:16px">ส่งใบลา</button>
+      </form>
+      <div id="sendMsg"></div>
+    </div>
+  </section>
+
+  <!-- อนุมัติ -->
+  <section id="v-approve" class="view hide">
+    <div class="top"><div><h2 style="font-size:24px">อนุมัติใบลา</h2><span class="hint" id="apScope"></span></div>
+      <button class="btn line sm" id="apRef" onclick="loadPending()">รีเฟรช</button></div>
+    <div id="apMsg"></div>
+    <div class="sec" id="apList"></div>
+  </section>
+
+  <!-- ทีม -->
+  <section id="v-team" class="view hide">
+    <div class="top"><div><h2 style="font-size:24px" id="teamTitle">สิทธิ์ลาของทีม</h2><span class="hint" id="teamScope"></span></div>
+      <button class="btn line sm" id="tmRef" onclick="loadTeam()">รีเฟรช</button></div>
+    <div class="card sec">
+      <div class="filters"><input id="tmSearch" placeholder="ค้นหารหัสหรือชื่อ" oninput="drawTeam()">
+        <select id="tmDept" onchange="drawTeam()"></select>
+        <select id="tmSt" onchange="drawTeam()"><option value="">ทุกสถานะ</option><option>เกินสิทธิ์</option><option>ใกล้หมด</option><option>ปกติ</option></select></div>
+      <table class="cards"><thead><tr><th>รหัส</th><th>ชื่อ-สกุล</th><th>แผนก</th><th class="num">เหลือป่วย</th><th class="num">เหลือกิจ</th><th class="num">เหลือพักร้อน</th><th class="num">รออนุมัติ</th><th>สถานะ</th></tr></thead>
+        <tbody id="tmBody"></tbody></table>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="v-dash" class="view hide">
+    <div class="top"><h2 style="font-size:24px">Dashboard วันลา</h2><button class="btn line sm" id="dbRef" onclick="loadDash()">รีเฟรช</button></div>
+    <div class="grid4 sec" id="kpis"></div>
+    <div class="card sec"><h3>วันลาที่อนุมัติ แยกแผนก</h3>
+      <div class="legend"><span><i style="background:#1F4E4E"></i>ลาป่วย</span><span><i style="background:#C9A227"></i>ลากิจ</span><span><i style="background:#B4531A"></i>ลาพักร้อน</span></div>
+      <div id="deptBars"></div></div>
+    <div class="grid3 sec" style="grid-template-columns:2fr 1fr">
+      <div class="card"><h3>ลาเกินสิทธิ์ (ต้องหักเงิน)</h3><table class="cards"><thead><tr><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th class="num">วันเกิน</th><th class="num">หักเงิน</th></tr></thead><tbody id="overBody"></tbody></table></div>
+      <div class="card"><h3>พักร้อนใกล้หมด</h3><div id="nearList"></div></div>
+    </div>
+  </section>
+
+  <!-- PIN -->
+  <section id="v-pin" class="view hide">
+    <div class="card" style="max-width:520px">
+      <h3 style="font-size:22px">จัดการ PIN</h3>
+      <p class="hint">ใช้เมื่อพนักงานลืม PIN หรือพนักงานใหม่ · แจ้ง PIN ใหม่ให้เจ้าตัวเป็นการส่วนตัว</p>
+      <label for="pinEmp">พนักงาน</label><select id="pinEmp"></select>
+      <label for="pinNew">PIN ใหม่ (4 หลัก)</label>
+      <div style="display:flex;gap:8px"><input id="pinNew" inputmode="numeric" maxlength="4"><button class="btn line" type="button" onclick="randPin()">สุ่ม</button></div>
+      <button class="btn" id="pinBtn" style="margin-top:16px" onclick="savePin()">บันทึก PIN</button>
+      <div id="pinMsg"></div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="confirmBox"><div class="card">
+  <h3 style="font-size:19px" id="cfTitle">ยืนยัน</h3>
+  <p id="confirmText"></p>
+  <div class="acts"><button class="btn line" onclick="closeConfirm()">ยกเลิก</button><button class="btn" id="cfOk">ยืนยัน</button></div>
+</div></div>
+
+<script>
+  var S = { id: '', pin: '', role: '', data: null, team: [] };
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var fmt = function (n) { return (Math.round(n * 10) / 10).toString(); };
+  var money = function (n) { return Number(n).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  var VIEWS = [
+    { id: 'me', label: 'สิทธิ์ลาของฉัน', roles: ['พนักงาน', 'หัวหน้า', 'HR'], grp: 'ของฉัน' },
+    { id: 'apply', label: 'ยื่นใบลา', roles: ['พนักงาน', 'หัวหน้า', 'HR'], grp: 'ของฉัน' },
+    { id: 'approve', label: 'อนุมัติใบลา', roles: ['หัวหน้า', 'HR'], grp: 'จัดการ', badge: true },
+    { id: 'team', label: 'สิทธิ์ลาของทีม', labelHR: 'พนักงานทั้งหมด', roles: ['หัวหน้า', 'HR'], grp: 'จัดการ' },
+    { id: 'dash', label: 'Dashboard', roles: ['HR'], grp: 'HR' },
+    { id: 'pin', label: 'จัดการ PIN', roles: ['HR'], grp: 'HR' }
+  ];
+
+  (function init() {
+    var sel = $('days');
+    for (var d = 0.5; d <= 10; d += 0.5) { var o = document.createElement('option'); o.value = d; o.textContent = fmt(d) + ' วัน'; if (d === 1) o.selected = true; sel.appendChild(o); }
+    var t = new Date(); t.setMinutes(t.getMinutes() - t.getTimezoneOffset()); $('date').value = t.toISOString().slice(0, 10);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { menu(false); closeConfirm(); } });
+  })();
+
+  function msg(box, text, kind) { $(box).innerHTML = text ? '<div class="msg ' + kind + '">' + esc(text) + '</div>' : ''; }
+  function busy(btn, on, label) {
+    var b = $(btn); if (!b) return; b.disabled = on;
+    if (on) { b.dataset.l = b.textContent; b.innerHTML = '<span class="spin"></span>' + (label || 'โหลด'); } else b.textContent = b.dataset.l || b.textContent;
+  }
+  function call(fn, args, ok, fail) {
+    google.script.run.withSuccessHandler(ok).withFailureHandler(function (e) { fail(e && e.message ? e.message : String(e)); })[fn].apply(null, args);
+  }
+  function auth() { return [S.id, S.pin]; }
+  function menu(open) { document.body.classList.toggle('menu', !!open); }
+  function chipFor(st) {
+    var c = st === 'อนุมัติ' || st === 'ปกติ' ? 'c-ok' : (st === 'รออนุมัติ' || st === 'ใกล้หมด' ? 'c-wait' : (st === 'เกินสิทธิ์' ? 'c-over' : 'c-no'));
+    return '<span class="chip ' + c + '">' + esc(st) + '</span>';
+  }
+
+  /* ---------- login / nav ---------- */
+  function doLogin(ev) {
+    ev.preventDefault();
+    S.id = $('id').value.trim().toUpperCase(); S.pin = $('pin').value.trim();
+    busy('loginBtn', true, 'กำลังตรวจสอบ'); msg('loginMsg', '');
+    call('login', auth(), function (d) { busy('loginBtn', false); afterLogin(d); }, function (e) { busy('loginBtn', false); msg('loginMsg', e, 'err'); });
+  }
+  function afterLogin(d) {
+    S.role = d.emp.role; S.data = d;
+    $('loginView').classList.add('hide'); $('hamBtn').classList.remove('hide'); $('userBox').classList.remove('hide');
+    $('uName').textContent = d.emp.id + ' ' + d.emp.name; $('uDept').textContent = d.emp.dept + ' · ' + d.emp.role;
+    $('dName').textContent = d.emp.id + ' ' + d.emp.name;
+    $('dInfo').innerHTML = esc(d.emp.dept) + ' <span class="chip c-role" style="margin-left:6px">' + esc(d.emp.role) + '</span>';
+    drawNav(d.pendingCount); renderMe(d); go('me');
+  }
+  function drawNav(pending) {
+    var html = '', grp = '';
+    VIEWS.forEach(function (v) {
+      if (v.roles.indexOf(S.role) < 0) return;
+      if (v.grp !== grp) { grp = v.grp; html += '<div class="grp">' + esc(grp) + '</div>'; }
+      var label = S.role === 'HR' && v.labelHR ? v.labelHR : v.label;
+      html += '<a id="nav-' + v.id + '" onclick="go(\'' + v.id + '\')"><span>' + esc(label) + '</span>' +
+        (v.badge && pending ? '<span class="badge">' + pending + '</span>' : '') + '</a>';
+    });
+    $('nav').innerHTML = html;
+  }
+  function go(view) {
+    var v = VIEWS.filter(function (x) { return x.id === view; })[0];
+    if (!v || v.roles.indexOf(S.role) < 0) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.view'), function (el) { el.classList.add('hide'); });
+    $('v-' + view).classList.remove('hide');
+    Array.prototype.forEach.call(document.querySelectorAll('.drawer a'), function (a) { a.classList.toggle('on', a.id === 'nav-' + view); });
+    $('pageTitle').textContent = S.role === 'HR' && v.labelHR ? v.labelHR : v.label;
+    menu(false); window.scrollTo(0, 0);
+    if (view === 'approve') loadPending();
+    if (view === 'team') loadTeam();
+    if (view === 'dash') loadDash();
+    if (view === 'pin') loadEmps();
+    if (view === 'apply') applyHint();
+  }
+  function logout() {
+    S = { id: '', pin: '', role: '', data: null, team: [] }; $('pin').value = ''; menu(false);
+    Array.prototype.forEach.call(document.querySelectorAll('.view'), function (el) { el.classList.add('hide'); });
+    $('hamBtn').classList.add('hide'); $('userBox').classList.add('hide'); $('loginView').classList.remove('hide'); $('pageTitle').textContent = 'ระบบวันลา';
+  }
+
+  /* ---------- ของฉัน ---------- */
+  function reloadMe() {
+    busy('refBtn', true);
+    call('login', auth(), function (d) { busy('refBtn', false); S.data = d; drawNav(d.pendingCount); renderMe(d); }, function (e) { busy('refBtn', false); msg('overMsg', e, 'err'); });
+  }
+  function renderMe(d) {
+    $('tenure').textContent = 'เริ่มงาน ' + d.emp.start + ' · อายุงาน ' + d.bal.tenure + ' ปี' + (d.bal.pending ? ' · รออนุมัติ ' + fmt(d.bal.pending) + ' วัน' : '');
+    $('stChip').innerHTML = chipFor(d.bal.status);
+    $('overMsg').innerHTML = d.bal.overDays > 0 ? '<div class="msg err">ลาเกินสิทธิ์ ' + fmt(d.bal.overDays) + ' วัน · หักเงินเดือนประมาณ ' + money(d.bal.deduct) + ' บาท</div>' : '';
+    $('balCards').innerHTML = d.bal.types.map(function (t) {
+      var pct = t.quota > 0 ? Math.max(0, Math.min(100, t.left / t.quota * 100)) : 0;
+      var c = t.left < 0 ? 'over' : (t.quota > 0 && t.left <= 1 ? 'low' : '');
+      return '<div class="card bal ' + c + '"><div class="t">' + esc(t.type) + '</div><div class="n">' + fmt(t.left) + ' <small>/ ' + fmt(t.quota) + ' วัน</small></div>' +
+        '<div class="bar"><i style="width:' + pct + '%"></i></div><div class="hint">ใช้ไป ' + fmt(t.used) + ' วัน' + (t.quota === 0 ? ' · ยังไม่มีสิทธิ์ (อายุงานไม่ถึง 1 ปี)' : '') + '</div></div>';
+    }).join('');
+    $('hist').innerHTML = d.hist.length ? d.hist.map(function (h) {
+      return '<tr><td data-l="เลขที่">' + esc(h.no) + '</td><td data-l="วันที่ลา">' + esc(h.date) + '</td><td data-l="ประเภท">' + esc(h.type) +
+        '</td><td data-l="วัน" class="num">' + fmt(h.days) + '</td><td data-l="เหตุผล">' + (esc(h.reason) || '-') + '</td><td data-l="สถานะ">' + chipFor(h.status) +
+        (h.by ? '<div class="hint">' + esc(h.by) + '</div>' : '') + '</td></tr>';
+    }).join('') : '<tr><td class="empty" colspan="6">ยังไม่มีประวัติการลา</td></tr>';
+  }
+  function applyHint() {
+    var b = S.data && S.data.bal; if (!b) return;
+    $('applyHint').textContent = 'คงเหลือ: ' + b.types.map(function (t) { return t.type + ' ' + fmt(t.left) + ' วัน'; }).join(' · ') +
+      (S.role === 'พนักงาน' ? '' : ' · ใบลาของคุณต้องให้ผู้มีสิทธิ์คนอื่นอนุมัติ');
+  }
+
+  /* ---------- ยื่นใบลา ---------- */
+  var pendingAction = null;
+  function confirmBox(title, text, okLabel, fn) { $('cfTitle').textContent = title; $('confirmText').textContent = text; $('cfOk').textContent = okLabel; pendingAction = fn; $('confirmBox').classList.add('show'); }
+  function closeConfirm() { $('confirmBox').classList.remove('show'); pendingAction = null; }
+  $('cfOk').onclick = function () { var f = pendingAction; closeConfirm(); if (f) f(); };
+  function sendLeave(ev, confirmed) {
+    if (ev) ev.preventDefault();
+    var form = { id: S.id, pin: S.pin, type: document.querySelector('input[name=type]:checked').value, date: $('date').value, days: $('days').value, reason: $('reason').value.trim(), confirm: !!confirmed };
+    busy('sendBtn', true, 'กำลังส่ง'); msg('sendMsg', '');
+    call('submitLeave', [form], function (r) {
+      busy('sendBtn', false);
+      if (r.needConfirm) { confirmBox('ใบลานี้จะเกินสิทธิ์', r.message, 'ยืนยันส่ง', function () { sendLeave(null, true); }); return; }
+      msg('sendMsg', r.message, 'ok'); $('reason').value = ''; S.data = r.data; renderMe(r.data); drawNav(r.data.pendingCount); applyHint();
+    }, function (e) { busy('sendBtn', false); msg('sendMsg', e, 'err'); });
+  }
+
+  /* ---------- อนุมัติ ---------- */
+  function loadPending() {
+    busy('apRef', true); $('apList').innerHTML = '<p class="hint">กำลังโหลด…</p>';
+    call('getPending', auth(), function (r) {
+      busy('apRef', false);
+      $('apScope').textContent = r.role === 'HR' ? 'ทุกแผนก · ' + r.list.length + ' รายการรออนุมัติ' : r.dept + ' · ' + r.list.length + ' รายการรออนุมัติ';
+      drawNav(r.list.length);
+      $('apList').innerHTML = r.list.length ? r.list.map(function (o) {
+        var warn = o.leftAfter < 0 ? '<span class="chip c-over">อนุมัติแล้วจะเกินสิทธิ์ ' + fmt(-o.leftAfter) + ' วัน</span>' : '<span class="hint">หลังอนุมัติเหลือ ' + fmt(o.leftAfter) + ' วัน</span>';
+        return '<div class="req"><div><b>' + esc(o.id + ' ' + o.name) + '</b> <span class="hint">' + esc(o.dept) + ' · ' + esc(o.no) + '</span><br>' +
+          esc(o.type) + ' ' + fmt(o.days) + ' วัน · วันที่ ' + esc(o.date) + (o.reason ? ' · ' + esc(o.reason) : '') + '<br>' + warn + '</div>' +
+          '<div class="acts"><button class="btn no sm" onclick="act(\'' + esc(o.no) + '\',\'ไม่อนุมัติ\',this)">ไม่อนุมัติ</button>' +
+          '<button class="btn ok sm" onclick="act(\'' + esc(o.no) + '\',\'อนุมัติ\',this)">อนุมัติ</button></div></div>';
+      }).join('') : '<div class="card empty">ไม่มีใบลารออนุมัติ</div>';
+    }, function (e) { busy('apRef', false); $('apList').innerHTML = ''; msg('apMsg', e, 'err'); });
+  }
+  function act(no, decision, btn) {
+    confirmBox(decision + ' ' + no, 'ยืนยัน ' + decision + ' ใบลา ' + no + ' ใช่ไหม', decision, function () {
+      btn.disabled = true;
+      call('decide', [S.id, S.pin, no, decision], function (r) { msg('apMsg', r.message, 'ok'); loadPending(); }, function (e) { btn.disabled = false; msg('apMsg', e, 'err'); });
+    });
+  }
+
+  /* ---------- ทีม ---------- */
+  function loadTeam() {
+    busy('tmRef', true); $('tmBody').innerHTML = '<tr><td class="empty" colspan="8">กำลังโหลด…</td></tr>';
+    call('getTeam', auth(), function (r) {
+      busy('tmRef', false); S.team = r.list;
+      $('teamTitle').textContent = r.role === 'HR' ? 'พนักงานทั้งหมด' : 'สิทธิ์ลาของทีม';
+      $('teamScope').textContent = (r.role === 'HR' ? 'ทุกแผนก' : r.dept) + ' · ' + r.list.length + ' คน';
+      var depts = []; r.list.forEach(function (e) { if (depts.indexOf(e.dept) < 0) depts.push(e.dept); });
+      $('tmDept').innerHTML = '<option value="">ทุกแผนก</option>' + depts.map(function (d) { return '<option>' + esc(d) + '</option>'; }).join('');
+      $('tmDept').classList.toggle('hide', r.role !== 'HR');
+      drawTeam();
+    }, function (e) { busy('tmRef', false); $('tmBody').innerHTML = '<tr><td class="empty" colspan="8">' + esc(e) + '</td></tr>'; });
+  }
+  function drawTeam() {
+    var q = $('tmSearch').value.trim().toLowerCase(), d = $('tmDept').value, st = $('tmSt').value;
+    var list = S.team.filter(function (e) { return (!q || (e.id + ' ' + e.name).toLowerCase().indexOf(q) >= 0) && (!d || e.dept === d) && (!st || e.status === st); });
+    var cellN = function (n) { return '<span class="' + (n < 0 ? 'neg' : '') + '">' + fmt(n) + '</span>'; };
+    $('tmBody').innerHTML = list.length ? list.map(function (e) {
+      return '<tr><td data-l="รหัส">' + esc(e.id) + '</td><td data-l="ชื่อ">' + esc(e.name) + '</td><td data-l="แผนก">' + esc(e.dept) + '</td>' +
+        '<td data-l="เหลือป่วย" class="num">' + cellN(e.types[0].left) + '</td><td data-l="เหลือกิจ" class="num">' + cellN(e.types[1].left) + '</td>' +
+        '<td data-l="เหลือพักร้อน" class="num">' + cellN(e.types[2].left) + ' <span class="hint">/ ' + fmt(e.types[2].quota) + '</span></td>' +
+        '<td data-l="รออนุมัติ" class="num">' + (e.pending ? fmt(e.pending) : '-') + '</td><td data-l="สถานะ">' + chipFor(e.status) + '</td></tr>';
+    }).join('') : '<tr><td class="empty" colspan="8">ไม่พบข้อมูล</td></tr>';
+  }
+
+  /* ---------- Dashboard ---------- */
+  function loadDash() {
+    busy('dbRef', true);
+    call('getDashboard', auth(), function (r) {
+      busy('dbRef', false);
+      var k = [['วันลาอนุมัติรวม', fmt(r.approved), 'วัน'], ['ใบลารออนุมัติ', r.pending, 'รายการ'], ['ลาเกินสิทธิ์', r.overCount, 'คน'], ['เงินที่ต้องหักรวม', money(r.deduct), 'บาท']];
+      $('kpis').innerHTML = k.map(function (x) { return '<div class="card kpi"><div class="t">' + x[0] + '</div><div class="n">' + esc(x[1]) + ' <small>' + x[2] + '</small></div></div>'; }).join('');
+      var max = Math.max.apply(null, r.depts.map(function (d) { return d['ลาป่วย'] + d['ลากิจ'] + d['ลาพักร้อน']; }).concat([1]));
+      var col = { 'ลาป่วย': '#1F4E4E', 'ลากิจ': '#C9A227', 'ลาพักร้อน': '#B4531A' };
+      $('deptBars').innerHTML = r.depts.map(function (d) {
+        var tot = d['ลาป่วย'] + d['ลากิจ'] + d['ลาพักร้อน'];
+        return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:14px"><b>' + esc(d.dept) + '</b><span>' + fmt(tot) + ' วัน</span></div>' +
+          '<div class="hbar" style="width:' + (tot / max * 100) + '%">' + ['ลาป่วย', 'ลากิจ', 'ลาพักร้อน'].map(function (t) {
+            return '<i title="' + t + ' ' + fmt(d[t]) + '" style="width:' + (tot ? d[t] / tot * 100 : 0) + '%;background:' + col[t] + '"></i>'; }).join('') + '</div></div>';
+      }).join('');
+      $('overBody').innerHTML = r.over.length ? r.over.map(function (o) {
+        return '<tr><td data-l="รหัส">' + esc(o.id) + '</td><td data-l="ชื่อ">' + esc(o.name) + '</td><td data-l="แผนก">' + esc(o.dept) + '</td><td data-l="วันเกิน" class="num">' + fmt(o.overDays) + '</td><td data-l="หักเงิน" class="num">' + money(o.deduct) + '</td></tr>';
+      }).join('') : '<tr><td class="empty" colspan="5">ไม่มี</td></tr>';
+      $('nearList').innerHTML = r.near.length ? r.near.map(function (n) { return '<div style="padding:6px 0;border-bottom:1px solid #EEEBE2">' + esc(n.id + ' ' + n.name) + '<div class="hint">' + esc(n.dept) + '</div></div>'; }).join('') : '<p class="hint">ไม่มี</p>';
+    }, function (e) { busy('dbRef', false); $('kpis').innerHTML = '<div class="msg err">' + esc(e) + '</div>'; });
+  }
+
+  /* ---------- PIN ---------- */
+  function loadEmps() {
+    call('listEmployees', auth(), function (list) {
+      $('pinEmp').innerHTML = list.map(function (e) { return '<option value="' + esc(e.id) + '">' + esc(e.id + ' ' + e.name + ' (' + e.dept + ' · ' + e.role + ')') + '</option>'; }).join('');
+    }, function (e) { msg('pinMsg', e, 'err'); });
+  }
+  function randPin() { $('pinNew').value = String(Math.floor(1000 + Math.random() * 9000)); }
+  function savePin() {
+    var t = $('pinEmp').value, p = $('pinNew').value.trim();
+    if (!/^\d{4}$/.test(p)) { msg('pinMsg', 'PIN ต้องเป็นตัวเลข 4 หลัก', 'err'); return; }
+    busy('pinBtn', true, 'กำลังบันทึก');
+    call('resetPin', [S.id, S.pin, t, p], function (r) { busy('pinBtn', false); msg('pinMsg', r.message, 'ok'); $('pinNew').value = ''; if (t === S.id) S.pin = p; },
+      function (e) { busy('pinBtn', false); msg('pinMsg', e, 'err'); });
+  }
+</script>
+</body>
+</html>
